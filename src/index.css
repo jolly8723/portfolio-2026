@@ -1,0 +1,176 @@
+/* Lekta: Lecta renamed + emboldened via scripts/make-weights.py (licence requires the rename). */
+@font-face {
+  font-family: 'Lekta';
+  src:
+    url('/fonts/Lekta-Regular.woff2') format('woff2'),
+    url('/fonts/Lekta-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lekta';
+  src:
+    url('/fonts/Lekta-Medium.woff2') format('woff2'),
+    url('/fonts/Lekta-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lekta';
+  src:
+    url('/fonts/Lekta-SemiBold.woff2') format('woff2'),
+    url('/fonts/Lekta-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lekta';
+  src:
+    url('/fonts/Lekta-Bold.woff2') format('woff2'),
+    url('/fonts/Lekta-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font: 'Lekta', ui-rounded, system-ui, sans-serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-theme: cubic-bezier(0.65, 0, 0.35, 1);
+  --theme-duration: 700ms;
+  --hover-duration: 220ms;
+
+  /* Glass + surfaces — overwritten live from the ⌘/ panel (src/fx/useGlassVars.ts). */
+  --glass-on: 1;
+  --glass-blur: 28px;
+  --glass-saturate: 1.15;
+  --glass-tint: 0.05;
+  --glass-noise: 0.22;
+  --glass-noise-size: 180px;
+  --surface-backdrop: blur(8px) saturate(1.1);
+
+  font-family: var(--font);
+  color: var(--fg);
+  background: var(--page-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  overflow-x: clip;
+}
+
+body {
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 24px;
+}
+
+p,
+ul,
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 400;
+}
+
+img {
+  display: block;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--fg) 18%, transparent);
+}
+
+/* ------------------------------------------------------------------ text entry */
+
+[data-reveal] {
+  opacity: 0;
+}
+
+/* `backwards` (not `both`) so once finished the element's own transforms — hover lifts — apply again. */
+[data-reveal].is-visible {
+  opacity: 1;
+  animation: reveal 900ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --theme-duration: 1ms;
+  }
+  [data-reveal],
+  [data-reveal].is-visible {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ per-scheme assets */
+
+/* Stack light/dark variants of an image and crossfade them with the theme. */
+[data-scheme-only] {
+  transition: opacity var(--theme-duration) var(--ease-theme);
+}
+
+:root[data-scheme='dark'] [data-scheme-only='light'],
+:root[data-scheme='light'] [data-scheme-only='dark'] {
+  opacity: 0;
+}
+
+/* Registered so the polaroid hover lift/settle can transition while other transform inputs update per frame. */
+@property --lift {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --settle {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+/* 0 = no glass panel, 1 = full glass. Registered so toggling it animates (see Home.module.css). */
+@property --glass-on {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}

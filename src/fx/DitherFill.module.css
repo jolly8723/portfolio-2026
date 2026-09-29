@@ -1,0 +1,9 @@
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  pointer-events: none;
+  image-rendering: pixelated;
+  border-radius: inherit;
+}

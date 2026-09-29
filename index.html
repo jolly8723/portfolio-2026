@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-scheme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rahul Ranjan</title>
+    <link rel="preload" href="/fonts/Lekta-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      /* Pre-paint background so the first frame matches the stored theme. */
+      html { background: #f2fbff; }
+      html[data-scheme="dark"] { background: #111516; }
+    </style>
+    <script>
+      // Resolve the theme before first paint. Keep ids in sync with src/theme/themes.ts.
+      (function () {
+        var schemes = { light: 'light', dark: 'dark' };
+        var mode = 'system';
+        try { mode = localStorage.getItem('theme-mode') || 'system'; } catch (e) {}
+        var id = mode;
+        if (mode === 'system' || !schemes[mode]) {
+          id = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        var root = document.documentElement;
+        root.setAttribute('data-theme', id);
+        root.setAttribute('data-scheme', schemes[id]);
+        root.style.colorScheme = schemes[id];
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

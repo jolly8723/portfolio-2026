@@ -1,0 +1,7 @@
+/* The page container sizes the document-anchored dither canvas. */
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 123px;
+  overflow-x: clip;
+}

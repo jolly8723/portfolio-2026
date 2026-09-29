@@ -1,0 +1,15 @@
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-out);
+}
+
+.canvas[data-ready='true'] {
+  opacity: 1;
+}

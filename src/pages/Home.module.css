@@ -1,0 +1,460 @@
+/* ------------------------------------------------------------------ glass panel */
+
+.panel {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  width: min(670px, 100%);
+  margin: 0 auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 33px;
+  /*
+   * Everything glassy is scaled by --glass-on (0/1, toggled from the ⌘/ panel) so the
+   * panel dissolves smoothly and leaves the content directly on the dither.
+   * Shade (per theme) sits under the white glass tint (live-tunable).
+   */
+  --glass-alpha: calc(var(--glass-tint) * var(--glass-on));
+  background:
+    linear-gradient(rgb(255 255 255 / var(--glass-alpha)), rgb(255 255 255 / var(--glass-alpha))),
+    color-mix(in srgb, var(--panel-shade) calc(var(--glass-on) * 100%), transparent);
+  border: 0.5px solid color-mix(in srgb, var(--panel-border) calc(var(--glass-on) * 100%), transparent);
+  border-top: 0;
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-on)))
+    saturate(calc(1 + (var(--glass-saturate) - 1) * var(--glass-on)));
+  backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-on)))
+    saturate(calc(1 + (var(--glass-saturate) - 1) * var(--glass-on)));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--panel-sheen) calc(var(--glass-on) * 100%), transparent);
+  transition: --glass-on 650ms var(--ease-out);
+}
+
+/*
+ * Once the fade-out finishes, drop the backdrop-filter and the grain layer entirely
+ * (both are invisible by then). A backdrop-filter on the panel, or a blended child like
+ * the grain, makes the panel a "backdrop root", which would stop the chips/cards inside
+ * it from blurring the dither behind the page. See useGlassVars.ts.
+ */
+:global(:root[data-glass='off']) .panel {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:global(:root[data-glass='off']) .glassNoise {
+  display: none;
+}
+
+/* Frosted grain: sits above the panel's background, below its content. */
+.glassNoise {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: var(--glass-noise-size) var(--glass-noise-size);
+  opacity: calc(var(--glass-noise) * var(--noise-strength) * var(--glass-on));
+  mix-blend-mode: overlay;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nameChip {
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--chip-bg);
+  -webkit-backdrop-filter: var(--surface-backdrop);
+  backdrop-filter: var(--surface-backdrop);
+  color: color-mix(in srgb, var(--fg) 50%, transparent);
+  font-size: 16px;
+  line-height: normal;
+  letter-spacing: 0.16px;
+  white-space: nowrap;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.linkGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.iconChip {
+  display: grid;
+  place-items: center;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  -webkit-backdrop-filter: var(--surface-backdrop);
+  backdrop-filter: var(--surface-backdrop);
+  cursor: pointer;
+  transition:
+    background-color var(--hover-duration) ease,
+    transform var(--hover-duration) var(--ease-out);
+}
+
+.iconChip:hover {
+  background: var(--chip-bg-hover);
+  transform: translateY(-1px) scale(1.06);
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 136px;
+}
+
+.upper {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.stack32 {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: stretch;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.16px;
+}
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bullets {
+  padding-left: 21px;
+  list-style: disc;
+}
+
+.inlineLink {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--hover-duration) ease;
+}
+
+.inlineLink:hover {
+  text-decoration-style: solid;
+}
+
+.small {
+  font-size: 12px;
+  line-height: normal;
+}
+
+/* ------------------------------------------------------------------ experience */
+
+.roles {
+  display: flex;
+  flex-direction: column;
+  border: 0.5px solid var(--hairline-thin);
+  border-radius: 6px;
+  overflow: clip;
+}
+
+.role {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px 10px 10px;
+  background: var(--row-bg);
+  border-bottom: 0.5px solid var(--hairline-thin);
+  -webkit-backdrop-filter: var(--surface-backdrop);
+  backdrop-filter: var(--surface-backdrop);
+  transition: background-color var(--hover-duration) ease;
+}
+
+.role:last-child {
+  border-bottom: 0;
+}
+
+.role:hover {
+  background: var(--row-bg-hover);
+}
+
+.roleMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.logo {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8.571px;
+  overflow: hidden;
+  background: var(--logo-bg);
+  transition: transform 360ms var(--ease-out);
+}
+
+.logo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.role:hover .logo {
+  transform: scale(1.06) rotate(-3deg);
+}
+
+.roleText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.roleTitle {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.14px;
+}
+
+.period {
+  padding-top: 6px;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ work + experiments */
+
+.workGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.workCard,
+.experimentCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border: 0.5px solid var(--card-border);
+  -webkit-backdrop-filter: var(--surface-backdrop);
+  backdrop-filter: var(--surface-backdrop);
+  cursor: pointer;
+  transition:
+    background-color var(--hover-duration) ease,
+    transform 420ms var(--ease-out),
+    box-shadow 420ms var(--ease-out);
+}
+
+.workCard {
+  gap: 6px;
+  padding: 6px 6px 8px;
+  background: var(--card-bg);
+}
+
+.experimentCard {
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 10px;
+  padding: 6px;
+  background: var(--exp-card-bg);
+}
+
+.workCard:hover,
+.experimentCard:hover {
+  background: var(--card-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -8px var(--card-shadow);
+}
+
+.workImage {
+  aspect-ratio: 279 / 160.875;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.workImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms var(--ease-out);
+}
+
+.workCard:hover .workImage img {
+  transform: scale(1.035);
+}
+
+.cardTitle {
+  padding-left: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: normal;
+  letter-spacing: 0.14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.experimentCard .cardTitle {
+  padding-left: 0;
+}
+
+.experimentRow {
+  display: flex;
+  gap: 6px;
+}
+
+.experimentThumb {
+  height: 123px;
+  border-radius: 2px;
+  background: var(--placeholder);
+}
+
+/* ------------------------------------------------------------------ polaroids */
+
+.polaroids {
+  position: relative;
+  height: 326px;
+}
+
+.polaroidStage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 590px;
+  height: 326px;
+  transform-origin: top left;
+}
+
+.shakeChip {
+  position: absolute;
+  top: 275px;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 10px 24px;
+  border-radius: 50px;
+  background: var(--chip-bg);
+  -webkit-backdrop-filter: var(--surface-backdrop);
+  backdrop-filter: var(--surface-backdrop);
+  color: var(--fg-strong);
+  font-size: 16px;
+  line-height: 24px;
+  white-space: nowrap;
+  transition: background-color var(--hover-duration) ease;
+}
+
+.shakeChip:hover {
+  background: var(--chip-bg-hover);
+}
+
+/* ------------------------------------------------------------------ contact */
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  background: var(--contact-bg);
+  border: 1px solid var(--contact-border);
+  -webkit-backdrop-filter: var(--surface-backdrop);
+  backdrop-filter: var(--surface-backdrop);
+}
+
+.copyMail {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 124px;
+  height: 47px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform var(--hover-duration) var(--ease-out),
+    box-shadow var(--hover-duration) ease;
+}
+
+.copyMail:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -10px var(--card-shadow);
+}
+
+.copyMail:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.copyMailLabel {
+  position: relative;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.32px;
+}
+
+/* ------------------------------------------------------------------ responsive */
+
+@media (max-width: 700px) {
+  .panel {
+    padding: 72px 20px 32px;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .header {
+    flex-wrap: wrap;
+  }
+
+  .polaroids {
+    height: calc(326px * 0.56);
+  }
+
+  .polaroidStage {
+    left: 50%;
+    transform: translateX(-50%) scale(0.56);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 480px) {
+  .workGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .experimentRow {
+    flex-direction: column;
+  }
+}
