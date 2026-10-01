@@ -66,6 +66,7 @@
 }
 
 .nameChip {
+  font-weight: 500;
   padding: 3px 10px;
   border-radius: 6px;
   background: var(--chip-bg);
@@ -161,6 +162,7 @@
 }
 
 .inlineLink {
+  font-weight: 500;
   text-decoration: underline dotted;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
@@ -360,6 +362,7 @@
 }
 
 .shakeChip {
+  font-weight: 500;
   position: absolute;
   top: 275px;
   left: 0;
@@ -383,6 +386,10 @@
 }
 
 /* ------------------------------------------------------------------ contact */
+
+.contact .sectionTitle {
+  font-weight: 700;
+}
 
 .contact {
   display: flex;
@@ -419,6 +426,7 @@
 }
 
 .copyMailLabel {
+  font-weight: 600;
   position: relative;
   font-size: 16px;
   line-height: 24px;
