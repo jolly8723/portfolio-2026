@@ -54,7 +54,7 @@ export interface Project {
 export const WORK: Project[] = [
   { title: 'Manual → Digital Ticketing Solution', image: '/assets/work/ticketing.png' },
   { title: 'Telegram Communities', image: '/assets/work/godel.png' },
-  { title: 'Gödel Earth Visual Identity', image: '/assets/work/godel.png' },
+  { title: 'Gödel Earth Visual Identity', image: '/assets/work/godel-identity.png' },
   { title: 'Dhandha AI', image: '/assets/work/dhandha.png' },
 ];
 

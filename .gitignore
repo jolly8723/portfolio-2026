@@ -23,6 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# Fonts are kept out of the public repo (Lecta source + generated Lekta weights).
-# Place them in public/fonts locally — see README.
-public/fonts/
+# The Lekta weights are committed; the original Lecta source stays local.
+public/fonts/Lecta.otf
