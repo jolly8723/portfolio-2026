@@ -202,7 +202,8 @@ function Polaroids() {
           />
         ))}
         <p className={styles.shakeChip} {...reveal(4)}>
-          Shake to reveal
+          <span className={styles.hintPointer}>Shake to reveal</span>
+          <span className={styles.hintTouch}>Tap to reveal</span>
         </p>
       </div>
     </div>

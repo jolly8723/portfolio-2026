@@ -4,7 +4,8 @@
   position: absolute;
   width: 278.8px;
   cursor: grab;
-  touch-action: pan-y; /* vertical swipes still scroll; sideways ones shake */
+  /* Scrolling still works; double-tap-to-zoom is disabled so rapid taps develop instead. */
+  touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -14,10 +15,16 @@
     --settle 520ms var(--ease-out);
 }
 
-.slot:hover {
-  z-index: 2;
-  --lift: -10px;
-  --settle: 0.4;
+@media (hover: hover) {
+  .slot:hover {
+    z-index: 2;
+    --lift: -10px;
+    --settle: 0.4;
+  }
+
+  .slot:hover .card {
+    filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.16));
+  }
 }
 
 .slot[data-dragging] {
@@ -33,15 +40,11 @@
   background: var(--polaroid-frame);
   border: 0.5px solid var(--polaroid-border);
   filter: drop-shadow(0 2px 7px rgb(0 0 0 / 0.1));
-  /* --dx/--dy/--tilt are written every frame while shaking; --lift/--settle transition on .slot. */
+  /* --dx/--dy/--tilt/--pop are written every frame while animating; --lift/--settle transition on .slot. */
   transform: translate(var(--dx, 0px), calc(var(--dy, 0px) + var(--lift)))
-    rotate(calc(var(--rotate) * var(--settle) + var(--tilt, 0deg)));
+    rotate(calc(var(--rotate) * var(--settle) + var(--tilt, 0deg))) scale(var(--pop, 1));
   transition: filter 520ms var(--ease-out);
   will-change: transform;
-}
-
-.slot:hover .card {
-  filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.16));
 }
 
 .slot[data-dragging] .card {

@@ -381,6 +381,21 @@
   transition: background-color var(--hover-duration) ease;
 }
 
+/* Hint matches the input: shake with a mouse, tap on touch screens. */
+.hintTouch {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .hintPointer {
+    display: none;
+  }
+
+  .hintTouch {
+    display: inline;
+  }
+}
+
 .shakeChip:hover {
   background: var(--chip-bg-hover);
 }
